@@ -2,5 +2,5 @@ packages:
   - frontend
 minimumReleaseAgeExclude:
   - '@types/node@26.6.10'
-  - '@types/react@18.3.32'
+  - '@types/react@18.3.32 || 19.3.1'
   - lucide-react@1.80.0

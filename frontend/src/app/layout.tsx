@@ -11,5 +11,5 @@ const sans = localFont({ src: '../../public/fonts/noto-sans-regular.ttf', weight
 const mono = localFont({ src: '../../public/fonts/dejavu-sans-mono.ttf', weight: '400', variable: '--font-mono', display: 'swap' });
 export const metadata: Metadata = { title: 'CIMON — Confirmation of Payee', description: 'Verified invoicing and safer tUSD8 settlement on QDay Aevum.' };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body className={`${display.variable} ${sans.variable} ${mono.variable}`}><Providers><Navbar/><main>{children}</main><Footer/></Providers></body></html>;
+  return <html lang="en"><body className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`}><Providers><Navbar/><main>{children}</main><Footer/></Providers></body></html>;
 }

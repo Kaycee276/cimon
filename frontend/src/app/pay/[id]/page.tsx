@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract, useSwitchChain } from 'wagmi';
 import { formatUnits } from 'viem';
 import { ArrowLeft, ArrowUpRight, Check, CircleAlert, Copy, Download, ExternalLink, LoaderCircle, ShieldCheck } from 'lucide-react';
@@ -10,8 +10,8 @@ import { formatToken, truncateAddress, explorerTx } from '../../../lib/utils';
 import { CopPreflightCard, type CopResult } from '../../../components/cop-preflight-card';
 import { ReceiptModal } from '../../../components/receipt-modal';
 type Invoice = { id: `0x${string}`; merchant: `0x${string}`; expectedPayee: `0x${string}`; amount: bigint; memo: string; safetyDelay: bigint; paidAt: bigint; status: number; actualPayer: `0x${string}` };
-export default function PayPage({ params }: { params: { id: string } }) {
- const { id } = params; const invoiceId = id as `0x${string}`;
+export default function PayPage({ params }: { params: Promise<{ id: string }> }) {
+ const { id } = use(params); const invoiceId = id as `0x${string}`;
  const { address, chainId } = useAccount(); const { switchChain } = useSwitchChain();
  const invoiceQuery = useReadContract({ address: payAddress, abi: payAbi, functionName: 'getInvoice', args: [invoiceId], query: { enabled: !!payAddress && /^0x[a-fA-F0-9]{64}$/.test(id) } });
  const nameQuery = useReadContract({ address: payAddress, abi: payAbi, functionName: 'getExpectedName', args: [invoiceId], query: { enabled: !!payAddress && !!invoiceQuery.data } });
