@@ -294,6 +294,16 @@ button {
   isolation: isolate;
 }
 .network-strip {
+  position: relative;
+  isolation: isolate;
+}
+.network-strip::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 -1vw;
+  transform: skewY(-0.55deg);
+  transform-origin: center;
   border-block: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.014);
 }
