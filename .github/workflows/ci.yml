@@ -62,7 +62,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Check Frontend Formatting
         run: pnpm --filter cimon-frontend format:check
