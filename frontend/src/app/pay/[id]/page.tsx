@@ -1,0 +1,53 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract, useSwitchChain } from 'wagmi';
+import { formatUnits } from 'viem';
+import { ArrowLeft, ArrowUpRight, Check, CircleAlert, Copy, Download, ExternalLink, LoaderCircle, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
+import { payAbi, payAddress, tokenAddress, erc20Abi, registryAbi, registryAddress } from '../../../config/contracts';
+import { aevumTestnet } from '../../../lib/aevum-chain';
+import { formatToken, truncateAddress, explorerTx } from '../../../lib/utils';
+import { CopPreflightCard, type CopResult } from '../../../components/cop-preflight-card';
+import { ReceiptModal } from '../../../components/receipt-modal';
+type Invoice = { id: `0x${string}`; merchant: `0x${string}`; expectedPayee: `0x${string}`; amount: bigint; memo: string; safetyDelay: bigint; paidAt: bigint; status: number; actualPayer: `0x${string}` };
+export default function PayPage({ params }: { params: { id: string } }) {
+ const { id } = params; const invoiceId = id as `0x${string}`;
+ const { address, chainId } = useAccount(); const { switchChain } = useSwitchChain();
+ const invoiceQuery = useReadContract({ address: payAddress, abi: payAbi, functionName: 'getInvoice', args: [invoiceId], query: { enabled: !!payAddress && /^0x[a-fA-F0-9]{64}$/.test(id) } });
+ const nameQuery = useReadContract({ address: payAddress, abi: payAbi, functionName: 'getExpectedName', args: [invoiceId], query: { enabled: !!payAddress && !!invoiceQuery.data } });
+ const copQuery = useReadContract({ address: payAddress, abi: payAbi, functionName: 'copCheck', args: [invoiceId], query: { enabled: !!payAddress && !!invoiceQuery.data } });
+ const invoice = invoiceQuery.data as Invoice | undefined; const cop = copQuery.data as CopResult | undefined;
+ const profileQuery = useReadContract({ address: registryAddress, abi: registryAbi, functionName: 'getProfile', args: [invoice?.expectedPayee!], query: { enabled: !!registryAddress && !!invoice?.expectedPayee } });
+ const payeeProfile = profileQuery.data as { domain: string } | undefined;
+ const allowanceQuery = useReadContract({ address: tokenAddress, abi: erc20Abi, functionName: 'allowance', args: [address!, payAddress!], query: { enabled: !!address && !!payAddress } });
+ const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
+ const receipt = useWaitForTransactionReceipt({ hash });
+ const [ackRisk,setAckRisk] = useState(false); const [copied,setCopied] = useState(false); const [receiptData,setReceiptData] = useState<any>(); const [action,setAction] = useState<'approve'|'pay'>('approve'); const [handledHash,setHandledHash] = useState<string>(); const [showReceipt,setShowReceipt] = useState(false);
+ useEffect(()=>{if(receipt.isSuccess&&hash&&handledHash!==hash){setHandledHash(hash);invoiceQuery.refetch();copQuery.refetch();allowanceQuery.refetch();if(action==='pay')fetch(`/api/receipt/${invoiceId}`).then(r=>r.json()).then(setReceiptData).catch(()=>setReceiptData({invoiceId,transactionHash:hash}));}},[receipt.isSuccess,invoiceId,hash,action,handledHash]);
+ useEffect(()=>{if(invoice?.status===2&&!receiptData)fetch(`/api/receipt/${invoiceId}`).then(r=>r.json()).then(setReceiptData).catch(()=>setReceiptData({invoiceId}));},[invoice?.status,invoiceId,receiptData]);
+ const settled = invoice?.status === 2 && receiptData;
+ async function copyPayee(){ if(invoice?.expectedPayee){await navigator.clipboard.writeText(invoice.expectedPayee);setCopied(true);setTimeout(()=>setCopied(false),1600);} }
+ async function downloadReceipt(){ const data=receiptData ?? await (await fetch(`/api/receipt/${invoiceId}`)).json(); setReceiptData(data); const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`cimon-receipt-${id.slice(2,10)}.json`;link.click();URL.revokeObjectURL(link.href); }
+ if(!payAddress) return <ConfigurationNotice/>
+ if(!/^0x[a-fA-F0-9]{64}$/.test(id)) return <StatePage title="Invalid invoice link" copy="This invoice ID is not a valid 32-byte identifier."/>
+ if(invoiceQuery.isLoading) return <StatePage title="Checking invoice" copy="Reading invoice details and the current CoP verdict from Aevum." loading/>
+ if(invoiceQuery.error || !invoice) return <StatePage title="Invoice unavailable" copy="This invoice could not be found on the configured CimonPay contract."/>
+ const isPaid = invoice.status === 2;
+ const isPayable = invoice.status === 0;
+ return <div className="product-page wrap"><div className="page-back"><Link href="/invoices"><ArrowLeft size={14}/>All invoices</Link><span className="chain-label"><span className="live-dot"/>Aevum Testnet · 44005</span></div>
+  <div className="checkout-head"><div><span className="eyebrow">SECURE CHECKOUT / {id.slice(0,10).toUpperCase()}</span><h1>{settled ? 'Payment confirmed.' : 'Review before you pay.'}</h1><p>{settled ? 'The transaction has been recorded on QDay Aevum.' : 'Confirm the invoice and recipient identity before authorizing settlement.'}</p></div><span className={`status-chip ${isPaid?'status-complete':'status-pending'}`}>{isPaid?'INVOICE PAID':'AWAITING PAYMENT'}</span></div>
+  <div className="checkout-grid"><div className="checkout-main">
+    <CopPreflightCard result={cop} expectedName={nameQuery.data as string} payee={invoice.expectedPayee} onCopy={copyPayee} domain={payeeProfile?.domain}/>
+    <section className="detail-panel"><div className="panel-title"><div><span className="eyebrow">PAYMENT DETAILS</span><h2>Invoice summary</h2></div><span className={`status-chip status-${['pending','escrowed','complete','cancelled','refunded'][invoice.status]||'pending'}`}>{['PENDING','ESCROWED','SETTLED','CANCELLED','REFUNDED'][invoice.status]}</span></div><div className="invoice-amount"><span>AMOUNT DUE</span><strong>{formatToken(invoice.amount)} <small>tUSD8</small></strong></div><div className="detail-rows"><div><span>Invoice memo</span><strong>{invoice.memo || 'No memo provided'}</strong></div><div><span>Merchant</span><code>{truncateAddress(invoice.merchant,9)}</code></div><div><span>Settlement</span><strong>{invoice.safetyDelay === 0n ? 'Instant settlement' : `${Number(invoice.safetyDelay)/60} minute safety escrow`}</strong></div><div><span>Token</span><strong>tUSD8 <a href={`https://explorer-test.qday.info/address/${tokenAddress}`} target="_blank" rel="noreferrer"><ExternalLink size={12}/></a></strong></div></div></section>
+  </div><aside className="checkout-side"><section className="action-panel"><span className="eyebrow">SETTLEMENT AUTHORIZATION</span><h2>{isPaid?'Payment settled':invoice.status===1?'Payment in escrow':'Two steps to settle'}</h2><p className="action-copy">Your wallet will ask you to approve each transaction. CIMON never handles your private keys.</p>
+   {!address ? <div className="inline-alert">Connect a wallet to continue.</div> : chainId !== aevumTestnet.id ? <button className="button button-primary full-button" onClick={()=>switchChain({chainId:aevumTestnet.id})}>Switch to Aevum <ArrowUpRight size={15}/></button> : invoice.status===2 ? <div className="inline-alert success-alert"><Check size={16}/>Invoice settled on-chain.</div> : invoice.status===1 ? <div className="inline-alert">Funds are held in escrow. Monitor the release window in invoice activity.</div> : invoice.status!==0 ? <div className="inline-alert">This invoice is no longer payable.</div> : <div>
+   {cop?.risk===2 && <label className="risk-ack"><input type="checkbox" checked={ackRisk} onChange={e=>setAckRisk(e.target.checked)}/><span>{cop.isFlagged?'This address is flagged. The contract blocks payment to flagged recipients.':'I understand this recipient failed verification and I want to proceed at my own risk.'}</span></label>}
+   {(allowanceQuery.data??0n)<invoice.amount ? <button disabled={isPending||receipt.isLoading||!!cop?.isFlagged} className="button button-primary full-button" onClick={()=>{setAction('approve');writeContract({address:tokenAddress,abi:erc20Abi,functionName:'approve',args:[payAddress!,invoice.amount],chainId:aevumTestnet.id})}}>{isPending?'Confirm in wallet…':'1. Approve tUSD8'} <ArrowUpRight size={15}/></button> : <button disabled={isPending||receipt.isLoading||(cop?.risk===2&&!ackRisk)||!!cop?.isFlagged||!cop} className="button button-primary full-button" onClick={()=>{setAction('pay');setReceiptData(undefined);writeContract({address:payAddress!,abi:payAbi,functionName:'payInvoiceWithRiskCap',args:[invoiceId, (cop?.risk??2) as 0|1|2],chainId:aevumTestnet.id})}}>{isPending?'Confirm in wallet…':'2. Pay invoice'} <ArrowUpRight size={15}/></button>}
+   <div className="step-caption">{(allowanceQuery.data??0n)<invoice.amount?'STEP 1 OF 2 · TOKEN APPROVAL':'STEP 2 OF 2 · RISK-CAPPED PAYMENT'}</div></div>}
+   {writeError && <div className="inline-alert error-alert"><CircleAlert size={15}/>{writeError.message.slice(0,160)}</div>}{receipt.isLoading&&<div className="tx-pending"><LoaderCircle size={15} className="spin"/> Waiting for Aevum confirmation…</div>}{hash&&<a className="transaction-link" href={explorerTx(hash)} target="_blank" rel="noreferrer">View transaction <ExternalLink size={13}/></a>}
+   {((receipt.isSuccess&&action==='pay')||(isPaid&&receiptData))&&<div className="receipt-ready"><div className="receipt-check"><Check size={19}/></div><strong>Transaction confirmed</strong><span>Cryptographic receipt available</span><button className="button button-outline full-button" onClick={()=>setShowReceipt(true)}>View settlement receipt</button><button className="download-link" onClick={downloadReceipt}><Download size={13}/>Download receipt JSON</button></div>}
+  </section><div className="security-note"><ShieldCheck size={15}/><span>Risk cap enforced on-chain. If the registry verdict changes before confirmation, the transaction reverts.</span></div></aside></div><ReceiptModal open={showReceipt} onClose={()=>setShowReceipt(false)} data={receiptData} transactionHash={hash} onDownload={downloadReceipt}/>
+ </div>;
+}
+function ConfigurationNotice(){return <StatePage title="Contract addresses required" copy="Set NEXT_PUBLIC_CIMON_PAY_ADDRESS and NEXT_PUBLIC_CIMON_REGISTRY_ADDRESS in frontend/.env.local, then restart the dev server."/>}
+function StatePage({title,copy,loading}:{title:string;copy:string;loading?:boolean}){return <div className="state-page wrap"><div className="state-icon">{loading?<LoaderCircle className="spin"/>:<CircleAlert/>}</div><h1>{title}</h1><p>{copy}</p><Link href="/" className="button button-outline">Back to CIMON <ArrowLeft size={14}/></Link></div>}
