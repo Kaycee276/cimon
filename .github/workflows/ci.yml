@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts:
+    name: Contracts CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Check Contract Formatting
+        run: |
+          cd contracts
+          forge fmt --check
+
+      - name: Build Contracts
+        run: |
+          cd contracts
+          forge build --sizes
+
+      - name: Run Contract Tests
+        run: |
+          cd contracts
+          forge test -vvv
+
+  frontend:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.18.0
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Frontend Formatting
+        run: pnpm --filter cimon-frontend format:check
+
+      - name: Lint Codebase
+        run: pnpm --filter cimon-frontend lint
+
+      - name: Typecheck TypeScript
+        run: pnpm --filter cimon-frontend typecheck
+
+      - name: Run Vitest Unit & Component Tests
+        run: pnpm --filter cimon-frontend test
+
+      - name: Build Next.js Production Bundle
+        run: pnpm --filter cimon-frontend build
