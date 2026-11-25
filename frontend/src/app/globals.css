@@ -301,9 +301,8 @@ button {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: 0 -1vw;
-  transform: skewY(-0.55deg);
-  transform-origin: center;
+  inset: 0;
+  clip-path: polygon(0 8%, 100% 0, 100% 92%, 0 100%);
   border-block: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.014);
 }
