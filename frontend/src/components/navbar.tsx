@@ -43,6 +43,7 @@ export function Navbar() {
   ];
 
   return (
+    <>
     <header
       className={`topbar ${mobileOpen ? 'drawer-open' : ''}`}
       style={mobileOpen ? { backgroundColor: '#090a0f' } : undefined}
@@ -142,7 +143,7 @@ export function Navbar() {
           {/* Mobile Hamburger Toggle Button */}
           <button
             type="button"
-            className="md:hidden flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-[#171a24] text-[#cbd1dc] hover:text-white transition-colors"
+            className="mobile-menu-toggle flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-[#171a24] text-[#cbd1dc] hover:text-white transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
@@ -152,10 +153,12 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Dropdown Drawer with 100% Solid Opaque Background */}
+    </header>
+
+      {/* Keep the drawer outside the filtered sticky header so fixed positioning uses the viewport. */}
       {mobileOpen && (
         <div
-          className="mobile-drawer md:hidden fixed top-[72px] inset-x-0 bottom-0 z-[100] flex flex-col justify-between p-6 overflow-y-auto"
+          className="mobile-drawer flex flex-col justify-between p-6 overflow-y-auto"
           style={{ backgroundColor: '#090a0f', opacity: 1 }}
         >
           <div className="flex flex-col gap-2">
@@ -229,6 +232,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
