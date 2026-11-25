@@ -33,7 +33,6 @@ export default function HomePage() {
           </div>
           <div className="hero-meta">
             <div className="hero-network">
-              <span className="live-dot" />
               QDay Aevum Testnet <span className="meta-divider" /> Chain 44005
             </div>
             <span className="mono-small">SETTLEMENT IN tUSD8</span>
@@ -43,10 +42,7 @@ export default function HomePage() {
 
       <div className="network-strip">
         <div className="wrap network-strip-inner">
-          <span className="network-status">
-            <span className="live-dot" />
-            Network operational
-          </span>
+          <span className="network-status">Network operational</span>
           <span>
             CHAIN <b>44005</b>
           </span>
