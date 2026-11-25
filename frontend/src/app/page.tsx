@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { CopSimulator } from '../components/cop-simulator';
@@ -21,11 +20,6 @@ export default function HomePage() {
           <div className="hero-network"><span className="live-dot"/>QDay Aevum Testnet <span className="meta-divider"/> Chain 44005</div>
           <span className="mono-small">SETTLEMENT IN tUSD8</span>
         </div>
-      </div>
-      <div className="hero-visual" aria-label="3D rendered CIMON verification seal">
-        <div className="hero-art-halo"/>
-        <Image className="hero-art" src="/images/cimon-verification-seal.webp" alt="A 3D cobalt and titanium verification shield with an emerald check" width={1536} height={1024} priority sizes="(max-width: 720px) 100vw, 50vw" />
-        <div className="hero-proofline"><span className="live-dot"/>IDENTITY CHECK / SETTLEMENT READY</div>
       </div>
     </section>
 
