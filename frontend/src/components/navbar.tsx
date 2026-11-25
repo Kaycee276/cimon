@@ -43,7 +43,10 @@ export function Navbar() {
   ];
 
   return (
-    <header className="topbar">
+    <header
+      className={`topbar ${mobileOpen ? "drawer-open" : ""}`}
+      style={mobileOpen ? { backgroundColor: "#090a0f" } : undefined}
+    >
       <div className="topbar-inner">
         {/* Brand */}
         <Link href="/" className="brand" onClick={() => setMobileOpen(false)}>
@@ -149,9 +152,12 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Dropdown Drawer */}
+      {/* Mobile Navigation Dropdown Drawer with 100% Solid Opaque Background */}
       {mobileOpen && (
-        <div className="md:hidden fixed top-[72px] inset-x-0 bottom-0 z-40 bg-[#090a0f]/95 backdrop-blur-2xl border-b border-white/[0.08] flex flex-col justify-between p-6 animate-in fade-in slide-in-from-top-4 duration-200">
+        <div
+          className="mobile-drawer md:hidden fixed top-[72px] inset-x-0 bottom-0 z-[100] flex flex-col justify-between p-6 overflow-y-auto"
+          style={{ backgroundColor: "#090a0f", opacity: 1 }}
+        >
           <div className="flex flex-col gap-2">
             <span className="text-[10px] font-mono tracking-widest text-[#727a8a] uppercase mb-1 px-3">
               Navigation
@@ -166,8 +172,8 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-blue-600/15 border border-blue-500/30 text-white"
-                      : "text-[#a2aab8] hover:text-white hover:bg-white/[0.04]"
+                      ? "bg-blue-600/20 border border-blue-500/40 text-white"
+                      : "text-[#a2aab8] hover:text-white hover:bg-white/[0.05]"
                   }`}
                 >
                   <Icon
@@ -179,7 +185,7 @@ export function Navbar() {
               );
             })}
 
-            <div className="my-3 border-t border-white/[0.07]" />
+            <div className="my-3 border-t border-white/[0.08]" />
 
             <span className="text-[10px] font-mono tracking-widest text-[#727a8a] uppercase mb-1 px-3">
               Ecosystem & Network
@@ -188,7 +194,7 @@ export function Navbar() {
               href="https://explorer-test.qday.info"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.05] transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
@@ -202,7 +208,7 @@ export function Navbar() {
               href="https://qday.io"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.05] transition-colors"
             >
               <span>QDay.io Official</span>
               <ArrowUpRight size={13} className="text-[#656e80]" />
@@ -212,7 +218,7 @@ export function Navbar() {
               href="https://github.com/Kaycee276/cimon"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.04] transition-colors"
+              className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs text-[#a2aab8] hover:text-white hover:bg-white/[0.05] transition-colors"
             >
               <span>GitHub Repository</span>
               <ArrowUpRight size={13} className="text-[#656e80]" />
@@ -220,7 +226,7 @@ export function Navbar() {
           </div>
 
           {/* Footer note inside mobile drawer */}
-          <div className="pt-4 border-t border-white/[0.06] text-[11px] text-[#6b7280] flex items-center justify-between">
+          <div className="pt-4 mt-6 border-t border-white/[0.08] text-[11px] text-[#727a8a] flex items-center justify-between">
             <span>Confirmation of Payee</span>
             <span>Settled in tUSD8</span>
           </div>

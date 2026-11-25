@@ -7,3 +7,7 @@
   .topbar-inner{padding:0 16px;gap:10px}
   .main-nav{display:none}
 }
+
+.topbar.drawer-open{background:#090a0f !important;background-color:#090a0f !important;z-index:100 !important}
+.mobile-drawer{background:#090a0f !important;background-color:#090a0f !important;opacity:1 !important;z-index:999 !important}
+
