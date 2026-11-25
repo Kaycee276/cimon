@@ -117,8 +117,7 @@ contract CimonPayTest is Test {
     }
 
     function test_createInvoice_emitsEvent() public {
-        bytes32 expectedId =
-            keccak256(abi.encode(block.chainid, address(pay), merchant, uint256(0)));
+        bytes32 expectedId = keccak256(abi.encode(block.chainid, address(pay), merchant, uint256(0)));
         vm.expectEmit(true, true, true, true);
         emit CimonPay.InvoiceCreated(expectedId, merchant, acme, AMOUNT, DELAY, "Order #1001", ACME);
         vm.prank(merchant);
@@ -779,16 +778,7 @@ contract CimonPayTest is Test {
 
         bytes32 expected = keccak256(
             abi.encode(
-                block.chainid,
-                address(pay),
-                id,
-                merchant,
-                acme,
-                payer,
-                AMOUNT,
-                keccak256(bytes("Order #1001")),
-                T0,
-                T0
+                block.chainid, address(pay), id, merchant, acme, payer, AMOUNT, keccak256(bytes("Order #1001")), T0, T0
             )
         );
         CimonPay.Receipt memory r = pay.getReceipt(id);
@@ -923,10 +913,7 @@ contract CimonPayTest is Test {
     // Reentrancy
     // ------------------------------------------------------------------
 
-    function _reentrantSetup()
-        internal
-        returns (CimonPay p, ReentrantERC20 rt, CimonRegistry reg)
-    {
+    function _reentrantSetup() internal returns (CimonPay p, ReentrantERC20 rt, CimonRegistry reg) {
         reg = new CimonRegistry(owner);
         vm.prank(owner);
         rt = new ReentrantERC20();

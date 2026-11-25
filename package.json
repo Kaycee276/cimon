@@ -7,6 +7,15 @@
     "dev": "pnpm --filter cimon-frontend dev",
     "build": "pnpm --filter cimon-frontend build",
     "start": "pnpm --filter cimon-frontend start",
-    "lint": "pnpm --filter cimon-frontend lint"
+    "lint": "pnpm --filter cimon-frontend lint",
+    "typecheck": "pnpm --filter cimon-frontend typecheck",
+    "format": "pnpm --filter cimon-frontend format && (cd contracts && forge fmt)",
+    "format:check": "pnpm --filter cimon-frontend format:check && (cd contracts && forge fmt --check)",
+    "test:contracts": "cd contracts && forge test",
+    "test:frontend": "pnpm --filter cimon-frontend test",
+    "test": "pnpm --filter cimon-frontend test && (cd contracts && forge test)"
+  },
+  "devDependencies": {
+    "prettier": "^3.10.1"
   }
 }

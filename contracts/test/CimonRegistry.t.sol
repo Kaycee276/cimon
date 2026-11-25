@@ -236,10 +236,7 @@ contract CimonRegistryTest is Test {
         vm.prank(acme);
         vm.expectEmit(true, false, false, true);
         emit TierSet(
-            acme,
-            ICimonRegistry.VerificationTier.VERIFIED_BUSINESS,
-            ICimonRegistry.VerificationTier.BASIC_USER,
-            acme
+            acme, ICimonRegistry.VerificationTier.VERIFIED_BUSINESS, ICimonRegistry.VerificationTier.BASIC_USER, acme
         );
         registry.updateProfile("Totally Different Ltd", "Acme Labs", "acmelabs.com", REG_HASH);
 
@@ -262,9 +259,7 @@ contract CimonRegistryTest is Test {
             if (i == 3) registry.updateProfile("Acme Corp Ltd", "Acme Labs", "acmelabs.com", bytes32(uint256(1)));
 
             assertEq(
-                uint8(registry.getProfile(who).tier),
-                uint8(ICimonRegistry.VerificationTier.BASIC_USER),
-                variants[i]
+                uint8(registry.getProfile(who).tier), uint8(ICimonRegistry.VerificationTier.BASIC_USER), variants[i]
             );
         }
     }

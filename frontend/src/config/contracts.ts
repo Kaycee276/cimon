@@ -2,7 +2,8 @@ import { parseAbi } from 'viem';
 
 export const tokenAddress = '0x456569838f1d43009A91ebA4263147Afd7233483' as const;
 export const payAddress = process.env.NEXT_PUBLIC_CIMON_PAY_ADDRESS as `0x${string}` | undefined;
-export const registryAddress = process.env.NEXT_PUBLIC_CIMON_REGISTRY_ADDRESS as `0x${string}` | undefined;
+export const registryAddress = process.env.NEXT_PUBLIC_CIMON_REGISTRY_ADDRESS as
+  `0x${string}` | undefined;
 
 export const erc20Abi = parseAbi([
   'function allowance(address owner, address spender) view returns (uint256)',

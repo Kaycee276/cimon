@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -8,22 +8,13 @@ export function Footer() {
       <div className="w-[min(1160px,calc(100%-32px))] sm:w-[min(1160px,calc(100%-48px))] mx-auto pb-6 sm:pb-8 border-b border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 text-xs text-[#8c94a4]">
         {/* Navigation links */}
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-8 font-medium">
-          <Link
-            href="/invoices/create"
-            className="hover:text-white transition-colors py-1"
-          >
+          <Link href="/invoices/create" className="hover:text-white transition-colors py-1">
             Create Invoice
           </Link>
-          <Link
-            href="/invoices"
-            className="hover:text-white transition-colors py-1"
-          >
+          <Link href="/invoices" className="hover:text-white transition-colors py-1">
             Invoices
           </Link>
-          <Link
-            href="/register"
-            className="hover:text-white transition-colors py-1"
-          >
+          <Link href="/register" className="hover:text-white transition-colors py-1">
             Register Payee
           </Link>
         </div>
@@ -70,9 +61,7 @@ export function Footer() {
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
           <span>Confirmation of Payee Protocol</span>
           <span className="text-white/10 hidden xs:inline">·</span>
-          <span className="font-mono text-[10px] text-[#7d8597]">
-            QDay Aevum Testnet (44005)
-          </span>
+          <span className="font-mono text-[10px] text-[#7d8597]">QDay Aevum Testnet (44005)</span>
         </div>
 
         <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 sm:gap-6">
@@ -87,9 +76,7 @@ export function Footer() {
             Aevum Challenge
           </a>
           <span className="text-white/10 hidden xs:inline">·</span>
-          <span className="text-[#9ca3af]">
-            © {new Date().getFullYear()} CIMON
-          </span>
+          <span className="text-[#9ca3af]">© {new Date().getFullYear()} CIMON</span>
         </div>
       </div>
     </footer>

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { aevumTestnet } from "../lib/aevum-chain";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { aevumTestnet } from '../lib/aevum-chain';
 import {
   ArrowUpRight,
   ChevronDown,
@@ -13,7 +13,7 @@ import {
   FileText,
   PlusCircle,
   ShieldCheck,
-} from "lucide-react";
+} from 'lucide-react';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -27,25 +27,25 @@ export function Navbar() {
   // Prevent background scroll when mobile menu is active
   useEffect(() => {
     if (mobileOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [mobileOpen]);
 
   const navLinks = [
-    { href: "/invoices", label: "Invoices", icon: FileText },
-    { href: "/invoices/create", label: "Create invoice", icon: PlusCircle },
-    { href: "/register", label: "Registry", icon: ShieldCheck },
+    { href: '/invoices', label: 'Invoices', icon: FileText },
+    { href: '/invoices/create', label: 'Create invoice', icon: PlusCircle },
+    { href: '/register', label: 'Registry', icon: ShieldCheck },
   ];
 
   return (
     <header
-      className={`topbar ${mobileOpen ? "drawer-open" : ""}`}
-      style={mobileOpen ? { backgroundColor: "#090a0f" } : undefined}
+      className={`topbar ${mobileOpen ? 'drawer-open' : ''}`}
+      style={mobileOpen ? { backgroundColor: '#090a0f' } : undefined}
     >
       <div className="topbar-inner">
         {/* Brand */}
@@ -61,7 +61,7 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={isActive ? "text-white font-medium" : ""}
+                className={isActive ? 'text-white font-medium' : ''}
               >
                 {link.label}
               </Link>
@@ -96,7 +96,7 @@ export function Navbar() {
               authenticationStatus,
               mounted,
             }) => {
-              const ready = mounted && authenticationStatus !== "loading";
+              const ready = mounted && authenticationStatus !== 'loading';
               const connected = ready && account && chain;
               return (
                 <div
@@ -104,7 +104,7 @@ export function Navbar() {
                   className="rainbow-connect"
                   style={{
                     opacity: ready ? 1 : 0,
-                    pointerEvents: ready ? "auto" : "none",
+                    pointerEvents: ready ? 'auto' : 'none',
                   }}
                 >
                   {!connected ? (
@@ -144,7 +144,7 @@ export function Navbar() {
             type="button"
             className="md:hidden flex items-center justify-center w-[34px] h-[34px] rounded-md border border-white/10 bg-[#171a24] text-[#cbd1dc] hover:text-white transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileOpen}
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -156,7 +156,7 @@ export function Navbar() {
       {mobileOpen && (
         <div
           className="mobile-drawer md:hidden fixed top-[72px] inset-x-0 bottom-0 z-[100] flex flex-col justify-between p-6 overflow-y-auto"
-          style={{ backgroundColor: "#090a0f", opacity: 1 }}
+          style={{ backgroundColor: '#090a0f', opacity: 1 }}
         >
           <div className="flex flex-col gap-2">
             <span className="text-[10px] font-mono tracking-widest text-[#727a8a] uppercase mb-1 px-3">
@@ -172,14 +172,11 @@ export function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3.5 px-3.5 py-3 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-blue-600/20 border border-blue-500/40 text-white"
-                      : "text-[#a2aab8] hover:text-white hover:bg-white/[0.05]"
+                      ? 'bg-blue-600/20 border border-blue-500/40 text-white'
+                      : 'text-[#a2aab8] hover:text-white hover:bg-white/[0.05]'
                   }`}
                 >
-                  <Icon
-                    size={18}
-                    className={isActive ? "text-blue-400" : "text-[#727a8a]"}
-                  />
+                  <Icon size={18} className={isActive ? 'text-blue-400' : 'text-[#727a8a]'} />
                   <span>{link.label}</span>
                 </Link>
               );

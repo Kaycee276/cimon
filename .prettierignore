@@ -1,0 +1,11 @@
+node_modules
+.next
+.next-*
+out
+build
+dist
+contracts/lib
+contracts/out
+contracts/cache
+contracts/broadcast
+pnpm-lock.yaml

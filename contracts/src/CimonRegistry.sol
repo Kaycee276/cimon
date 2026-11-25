@@ -133,7 +133,9 @@ contract CimonRegistry is ICimonRegistry {
         string calldata domain,
         bytes32 registrationHash
     ) external {
-        if (_profiles[msg.sender].tier != VerificationTier.UNREGISTERED) revert AlreadyRegistered();
+        if (_profiles[msg.sender].tier != VerificationTier.UNREGISTERED) {
+            revert AlreadyRegistered();
+        }
         _validateProfileText(legalName, tradeName, domain);
 
         _profiles[msg.sender] = PayeeProfile({
