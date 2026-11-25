@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { Providers } from '../components/providers';
 import { Navbar } from '../components/navbar';
 import { Footer } from '../components/footer';
+import '@rainbow-me/rainbowkit/styles.css';
 import './globals.css';
 import './product.css';
 const display = localFont({ src: '../../public/fonts/quicksand-medium.ttf', weight: '500', variable: '--font-display', display: 'swap' });
