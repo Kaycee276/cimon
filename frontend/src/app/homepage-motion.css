@@ -16,7 +16,6 @@
   flex: none;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 12px currentColor;
 }
 
 .verdict-mark-risk { color: #f4778b; }
