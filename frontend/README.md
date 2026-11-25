@@ -5,10 +5,10 @@ Next.js App Router frontend for confirmation of payee and verified tUSD8 invoici
 ## Setup
 
 ```bash
-cp .env.example .env.local
+cp frontend/.env.example frontend/.env.local
 # Replace the placeholder values with the deployed CimonPay and CimonRegistry addresses.
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 The app targets chain ID `44005` and uses the QDay testnet RPC. RainbowKit opens the browser wallet picker; connect with an installed injected EVM wallet and switch to Aevum Testnet when prompted. Wallet keys stay in the wallet and are never read from environment variables or stored by CIMON. The tUSD8 token is configured at `0x456569838f1d43009A91ebA4263147Afd7233483`.

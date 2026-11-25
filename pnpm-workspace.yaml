@@ -1,0 +1,6 @@
+packages:
+  - frontend
+minimumReleaseAgeExclude:
+  - '@types/node@26.6.10'
+  - '@types/react@18.3.32'
+  - lucide-react@1.80.0

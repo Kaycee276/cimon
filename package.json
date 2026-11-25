@@ -1,0 +1,12 @@
+{
+  "name": "cimon",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.18.0",
+  "scripts": {
+    "dev": "pnpm --filter cimon-frontend dev",
+    "build": "pnpm --filter cimon-frontend build",
+    "start": "pnpm --filter cimon-frontend start",
+    "lint": "pnpm --filter cimon-frontend lint"
+  }
+}
